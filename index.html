@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能垃圾分类系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-3 mt-2">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-leaf text-success me-2"></i>
+                    <span class="fw-bold">垃圾分类助手</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home me-1"></i>首页</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#classification-guide"><i class="fas fa-book me-1"></i>分类指南</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#environmental-news"><i class="fas fa-newspaper me-1"></i>环保资讯</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-question-circle me-1"></i>帮助</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <header class="text-center my-3">
+            <h1 class="display-5">智能垃圾分类系统</h1>
+            <p class="lead mb-0">保护环境，从正确分类开始</p>
+            <div class="d-flex justify-content-center mt-2">
+                <span class="badge bg-success me-1">科技助力环保</span>
+                <span class="badge bg-info me-1">智能识别</span>
+                <span class="badge bg-warning">精准分类</span>
+            </div>
+        </header>
+
+        <div class="row g-3">
+            <!-- 搜索功能区域 -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success text-white py-2 d-flex justify-content-between align-items-center">
+                        <h3 class="m-0 fs-5"><i class="fas fa-search me-2"></i>垃圾分类查询</h3>
+                        <span class="badge bg-light text-success">智能匹配</span>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="input-group mb-2">
+                            <input type="text" id="search-input" class="form-control" placeholder="输入垃圾名称..." aria-label="垃圾名称">
+                            <button class="btn btn-success" type="button" id="search-button">查询</button>
+                        </div>
+                        
+                        <!-- 热门搜索标签 -->
+                        <div class="mb-2">
+                            <small class="text-muted">热门搜索：</small>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <span class="badge bg-light text-dark pointer" onclick="document.getElementById('search-input').value='塑料瓶';searchGarbage()">塑料瓶</span>
+                                <span class="badge bg-light text-dark pointer" onclick="document.getElementById('search-input').value='果皮';searchGarbage()">果皮</span>
+                                <span class="badge bg-light text-dark pointer" onclick="document.getElementById('search-input').value='电池';searchGarbage()">电池</span>
+                                <span class="badge bg-light text-dark pointer" onclick="document.getElementById('search-input').value='纸巾';searchGarbage()">纸巾</span>
+                                <span class="badge bg-light text-dark pointer" onclick="document.getElementById('search-input').value='灯管';searchGarbage()">灯管</span>
+                            </div>
+                        </div>
+                        
+                        <div id="search-results" class="mt-2">
+                            <!-- 搜索结果将在这里显示 -->
+                            <div class="text-center p-3 text-muted">
+                                <i class="fas fa-info-circle mb-2 fs-4"></i>
+                                <p class="small mb-0">输入垃圾名称，获取准确分类信息</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图片识别功能区域 -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white py-2 d-flex justify-content-between align-items-center">
+                        <h3 class="m-0 fs-5"><i class="fas fa-camera me-2"></i>图片识别分类</h3>
+                        <span class="badge bg-light text-primary">AI识别</span>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="image-upload" class="form-label small mb-1">上传垃圾图片</label>
+                                <small class="text-muted">支持jpg、png格式</small>
+                            </div>
+                            <input class="form-control form-control-sm" type="file" id="image-upload" accept="image/*">
+                        </div>
+                        <div class="text-center mb-2">
+                            <button class="btn btn-primary btn-sm" id="recognize-button" disabled>识别分类</button>
+                            <button class="btn btn-outline-secondary btn-sm ms-1" onclick="document.getElementById('image-upload').value='';document.getElementById('image-preview').classList.add('d-none');document.getElementById('recognition-results').innerHTML='';document.getElementById('recognize-button').disabled=true;">清除</button>
+                        </div>
+                        <div class="image-preview-container text-center mb-2" style="min-height:150px">
+                            <img id="image-preview" class="img-fluid d-none" alt="预览图片">
+                            <div id="upload-placeholder" class="text-muted d-flex flex-column justify-content-center align-items-center h-100">
+                                <i class="fas fa-cloud-upload-alt fs-3 mb-2"></i>
+                                <p class="small mb-0">点击上方按钮上传图片</p>
+                            </div>
+                        </div>
+                        <div id="recognition-results" class="mt-2">
+                            <!-- 识别结果将在这里显示 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 环保小贴士轮播 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="alert alert-success mb-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <div class="tips-carousel overflow-hidden">
+                            <div class="tips-content">
+                                <p class="mb-0 small">小贴士：塑料瓶盖和瓶身可能属于不同的垃圾类别，投放前请分开处理。</p>
+                                <p class="mb-0 small">小贴士：废旧电池含有重金属，属于有害垃圾，请妥善处理。</p>
+                                <p class="mb-0 small">小贴士：纸巾和餐巾纸使用后已被污染，通常属于其他垃圾。</p>
+                                <p class="mb-0 small">小贴士：果皮等厨余垃圾请沥干水分后再投放，减少异味。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分类指南区域 -->
+        <div class="row mb-3" id="classification-guide">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white py-2 d-flex justify-content-between align-items-center">
+                        <h3 class="m-0 fs-5"><i class="fas fa-info-circle me-2"></i>垃圾分类指南</h3>
+                        <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#guideContent" aria-expanded="true">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="guideContent">
+                        <div class="card-body py-2">
+                            <div class="row g-2">
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="category-card text-center p-2 bg-danger bg-opacity-10 rounded h-100">
+                                        <i class="fas fa-skull-crossbones category-icon text-danger"></i>
+                                        <h4 class="fs-5">有害垃圾</h4>
+                                        <p class="small mb-1">含有害物质，需特殊安全处理</p>
+                                        <div class="examples small text-muted bg-white rounded p-1">
+                                            <span>常见物品：</span>
+                                            <span class="badge bg-danger bg-opacity-25 text-danger">电池</span>
+                                            <span class="badge bg-danger bg-opacity-25 text-danger">灯管</span>
+                                            <span class="badge bg-danger bg-opacity-25 text-danger">药品</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="category-card text-center p-2 bg-warning bg-opacity-10 rounded h-100">
+                                        <i class="fas fa-recycle category-icon text-warning"></i>
+                                        <h4 class="fs-5">可回收物</h4>
+                                        <p class="small mb-1">可循环利用和资源再生的物品</p>
+                                        <div class="examples small text-muted bg-white rounded p-1">
+                                            <span>常见物品：</span>
+                                            <span class="badge bg-warning bg-opacity-25 text-warning">纸类</span>
+                                            <span class="badge bg-warning bg-opacity-25 text-warning">塑料</span>
+                                            <span class="badge bg-warning bg-opacity-25 text-warning">金属</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="category-card text-center p-2 bg-success bg-opacity-10 rounded h-100">
+                                        <i class="fas fa-apple-alt category-icon text-success"></i>
+                                        <h4 class="fs-5">厨余垃圾</h4>
+                                        <p class="small mb-1">易腐烂的生物质生活废弃物</p>
+                                        <div class="examples small text-muted bg-white rounded p-1">
+                                            <span>常见物品：</span>
+                                            <span class="badge bg-success bg-opacity-25 text-success">果皮</span>
+                                            <span class="badge bg-success bg-opacity-25 text-success">剩饭</span>
+                                            <span class="badge bg-success bg-opacity-25 text-success">茶渣</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="category-card text-center p-2 bg-secondary bg-opacity-10 rounded h-100">
+                                        <i class="fas fa-trash category-icon text-secondary"></i>
+                                        <h4 class="fs-5">其他垃圾</h4>
+                                        <p class="small mb-1">难以回收的混合垃圾</p>
+                                        <div class="examples small text-muted bg-white rounded p-1">
+                                            <span>常见物品：</span>
+                                            <span class="badge bg-secondary bg-opacity-25 text-secondary">烟头</span>
+                                            <span class="badge bg-secondary bg-opacity-25 text-secondary">纸巾</span>
+                                            <span class="badge bg-secondary bg-opacity-25 text-secondary">陶瓷</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 环保资讯和统计数据 -->
+        <div class="row mb-3" id="environmental-news">
+            <div class="col-md-8 mb-2">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success bg-opacity-75 text-white py-2">
+                        <h3 class="m-0 fs-5"><i class="fas fa-newspaper me-2"></i>环保资讯</h3>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="news-item p-2 border-bottom">
+                                    <h5 class="fs-6"><i class="fas fa-leaf text-success me-1"></i>我国垃圾分类工作取得显著成效</h5>
+                                    <p class="small text-muted mb-0">至目前，297个地级以上城市已全面实施生活垃圾分类，居民小区的覆盖率达到82.5%，力争到2025年底前实现全覆盖。</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="news-item p-2 border-bottom">
+                                    <h5 class="fs-6"><i class="fas fa-leaf text-success me-1"></i>新型可降解材料研发成功</h5>
+                                    <p class="small text-muted mb-0">科研人员研发出新型可降解塑料替代品，可在自然环境中3个月内完全降解。</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="news-item p-2">
+                                    <h5 class="fs-6"><i class="fas fa-leaf text-success me-1"></i>垃圾分类进校园活动启动</h5>
+                                    <p class="small text-muted mb-0">全国中小学校开展垃圾分类教育，培养学生环保意识和责任感。</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="news-item p-2">
+                                    <h5 class="fs-6"><i class="fas fa-leaf text-success me-1"></i>智能垃圾分类设备走进社区</h5>
+                                    <p class="small text-muted mb-0">多地社区引入AI识别垃圾分类设备，提高居民垃圾分类准确率。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-75 text-white py-2">
+                        <h3 class="m-0 fs-5"><i class="fas fa-chart-pie me-2"></i>垃圾分类统计</h3>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="stats-item mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small">可回收物回收率</span>
+                                <span class="badge bg-warning">65%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="stats-item mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small">厨余垃圾处理率</span>
+                                <span class="badge bg-success">78%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="stats-item mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small">有害垃圾安全处置率</span>
+                                <span class="badge bg-danger">92%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="stats-item">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small">垃圾减量率</span>
+                                <span class="badge bg-info">45%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-light rounded-3 py-2 mt-2 mb-2">
+            <div class="row g-2 px-3">
+                <div class="col-md-4">
+                    <h5 class="fs-6"><i class="fas fa-leaf text-success me-1"></i>智能垃圾分类系统</h5>
+                    <p class="small text-muted mb-0">保护环境，从我做起，让地球更美好！</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <p class="small text-muted mb-0 mt-1">© 2025 智能垃圾分类系统</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="small">
+                        <a href="#" class="text-decoration-none text-muted me-2">关于我们</a>
+                        <a href="#" class="text-decoration-none text-muted me-2">使用帮助</a>
+                        <a href="#" class="text-decoration-none text-muted">联系我们</a>
+                    </div>
+                    <p class="small text-muted mb-0 mt-1"></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+    // 小贴士轮播效果
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipsContent = document.querySelector('.tips-content');
+        if (tipsContent) {
+            let currentTip = 0;
+            const tips = tipsContent.querySelectorAll('p');
+            
+            // 隐藏除第一条外的所有提示
+            for (let i = 1; i < tips.length; i++) {
+                tips[i].style.display = 'none';
+            }
+            
+            // 定时切换提示
+            setInterval(() => {
+                tips[currentTip].style.display = 'none';
+                currentTip = (currentTip + 1) % tips.length;
+                tips[currentTip].style.display = 'block';
+            }, 5000);
+        }
+    });
+    </script>
+</body>
+</html>
